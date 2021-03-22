@@ -74,9 +74,7 @@ class BugsService {
       const year = updatedDate.getFullYear()
       const month = (this.fixLowNumber(updatedDate.getMonth() + 1))
       const day = this.fixLowNumber(updatedDate.getDate())
-      const hour = this.fixLowNumber(updatedDate.getHours())
-      const minute = this.fixLowNumber(updatedDate.getMinutes())
-      const newDate = `${month}-${day}-${year} ${hour}:${minute}`
+      const newDate = `${month}.${day}.${year}`
       return newDate
     }
 
@@ -91,9 +89,7 @@ class BugsService {
       const year = updatedDate.getFullYear()
       const month = (this.fixLowNumber(updatedDate.getMonth() + 1))
       const day = this.fixLowNumber(updatedDate.getDate())
-      const hour = this.fixLowNumber(updatedDate.getHours())
-      const minute = this.fixLowNumber(updatedDate.getMinutes())
-      const newDate = `${month}-${day}-${year} ${hour}:${minute}`
+      const newDate = `${month}/${day}/${year}`
       return newDate
     }
 

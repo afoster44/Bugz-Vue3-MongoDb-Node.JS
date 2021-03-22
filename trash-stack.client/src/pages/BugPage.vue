@@ -2,33 +2,35 @@
   <div class="container-fluid">
     <div class="bug">
       <div class="row my-3" v-if="state.bug.creator">
-        <form class="form-inline" @submit.prevent="editBug" v-if="state.bug.creator.email === state.user.email">
-          <div class="form-group">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Title"
-              name="title"
-              id="title"
-              aria-describedby="helpId"
-              v-model="state.bug.title"
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Description"
-              name="description"
-              id="description"
-              aria-describedby="helpId"
-              v-model="state.bug.description"
-            />
-          </div>
-          <button class="btn btn-primary" type="submit">
-            Edit Bug
-          </button>
-        </form>
+        <div v-if="!state.bug.closed">
+          <form class="form-inline" @submit.prevent="editBug" v-if="state.bug.creator.email === state.user.email">
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Title"
+                name="title"
+                id="title"
+                aria-describedby="helpId"
+                v-model="state.bug.title"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Description"
+                name="description"
+                id="description"
+                aria-describedby="helpId"
+                v-model="state.bug.description"
+              />
+            </div>
+            <button class="btn btn-primary" type="submit">
+              Edit Bug
+            </button>
+          </form>
+        </div>
         <div v-if="state.bug">
           <div v-if="state.bug.closed" class="card-body">
             <h3>
@@ -64,25 +66,43 @@
         <div class="col-12">
           <div class="row my-5">
             <div class="col-12 border shadow" v-if="state.bug.creator">
-              <p>{{ state.bug.description }} | Created By: {{ state.bug.creator.name }} | Last Updated: {{ getBugDate(state.bug._id) }}</p>
+              <div v-if="!state.bug.closed">
+                <p class="my-2">
+                  {{ state.bug.description }}
+                </p>
+                <p class="my-2">
+                  Created By: {{ state.bug.creator.name }} | Last Updated: {{ getBugDate(state.bug._id) }}
+                </p>
 
-              <form class="form-inline" @submit.prevent="createNote" v-if="state.bug.closed === false">
-                <div class="form-group">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Title"
-                    :name="state.newNote.body"
-                    id="title"
-                    aria-describedby="helpId"
-                    v-model="state.newNote.body"
-                  />
-                </div>
-                <button type="submit" class="btn btn-primary">
-                  Submit your note
-                </button>
-              </form>
-              <Note v-for="note in state.notes" :key="note._id" :note="note" :bug="bug" />
+                <form class="form-inline my-3" @submit.prevent="createNote">
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Title"
+                      :name="state.newNote.body"
+                      id="title"
+                      aria-describedby="helpId"
+                      v-model="state.newNote.body"
+                    />
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    Submit your note
+                  </button>
+                </form>
+              </div>
+
+              <div v-if="state.bug.closed">
+                <p class="my-2">
+                  {{ state.bug.description }}
+                </p>
+                <p class="my-2">
+                  Created By: {{ state.bug.creator.name }} | Last Updated: {{ getBugDate(state.bug._id) }}
+                </p>
+              </div>
+              <div>
+                <Note v-for="note in state.notes" :key="note._id" :note="note" :bug="state.bug" />
+              </div>
             <!-- we will end up injecting notes right below this line but not below the next div -->
             </div>
           </div>

@@ -1,15 +1,21 @@
 <template>
   <div class="component">
-    <div class="col-12 border shadow" v-if="note.creator">
-      <p>
-        <span>{{ note.body }}</span>
-      </p>
-      <p>
-        <span>Note made by: {{ note.creator.name }} | Last Update at: {{ getNoteDate(note._id) }} | <img :src="note.creator.picture" alt=""></span>
-      </p>
-      <button type="button" class="btn btn-danger" @click.prevent="deleteNote" v-if="note.creator.email === state.user.email">
-        x
-      </button>
+    <div class="col-12 border shadow my-2 bg-primary" v-if="note.creator">
+      <div class="row">
+        <div class="col-6 border-right">
+          <p class="mt-2 mb-2">
+            <span class="mt-2 mb-2">{{ note.body }}</span>
+          </p>
+        </div>
+        <div class="col-6 border-left">
+          <div v-if="!bug.closed" class="m-2">
+            <button type="button" class="btn btn-danger mr-1" @click.prevent="deleteNote" v-if="note.creator.email === state.user.email">
+              x
+            </button>
+            <span>Note made by: {{ note.creator.name }} | Last Update at: {{ getNoteDate(note._id) }} | <img class="img" :src="note.creator.picture" alt=""></span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -56,6 +62,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+.img {
+  width: 10vh;
+  height: 10vh;
+}
 </style>

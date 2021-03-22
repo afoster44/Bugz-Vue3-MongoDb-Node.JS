@@ -27,6 +27,18 @@ class BugsService {
     AppState.bug = res.data
   }
 
+  async editBug(bugId, editedBug) {
+    logger.log(editedBug)
+    const res = await api.put('api/bugs/' + bugId, editedBug)
+    AppState.bug = res.data
+  }
+
+  async closeBug(bugId) {
+    logger.log('closing bug now', bugId)
+    const res = await api.delete('api/bugs/' + bugId)
+    AppState.bug = res.data
+  }
+
   async createNote(newNote) {
     logger.log(newNote)
     const res = await api.post('api/notes', newNote)
@@ -46,10 +58,12 @@ class BugsService {
     await api.delete('api/notes/' + id)
   }
 
-  async editBug(bugId, editedBug) {
-    logger.log(editedBug)
-    const res = await api.put('api/bugs/' + bugId, editedBug)
-    AppState.bug = res.data
+  async editNote(noteId, editedNote) {
+    logger.log('editing note', noteId, editedNote)
+    const res = await api.put('api/notes/' + noteId, editedNote)
+    const foundIndex = AppState.notes.findIndex(n => n._id === noteId)
+    AppState.notes.slice(foundIndex, 1)
+    AppState.notes += res.data
   }
 
   getBugDate(id) {

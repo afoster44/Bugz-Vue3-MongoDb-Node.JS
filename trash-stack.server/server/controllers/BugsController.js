@@ -7,10 +7,10 @@ export class BugsController extends BaseController {
     super('api/bugs')
     this.router
       .get('', this.getBugsAll)
-      // NOTE: Beyond this point all routes require Authorization tokens (the user must be logged in)
-      .use(Auth0Provider.getAuthorizedUserInfo)
       .get('/:id', this.getBugById)
       .get('/:id/notes', this.getNotesById)
+      // NOTE: Beyond this point all routes require Authorization tokens (the user must be logged in)
+      .use(Auth0Provider.getAuthorizedUserInfo)
       .post('', this.create)
       .delete('/:id', this.delete)
       .put('/:id', this.editBug)
@@ -36,7 +36,7 @@ export class BugsController extends BaseController {
 
   async editBug(req, res, next) {
     try {
-      const data = await bugsService.editBug(req.params.id, req.body)
+      const data = await bugsService.editBug(req.params.id, req.body, req.userInfo.id)
       res.send(data)
     } catch (error) {
       next(error)
@@ -66,6 +66,8 @@ export class BugsController extends BaseController {
       // NOTE NEVER TRUST THE CLIENT TO ADD THE CREATOR ID
       req.body.creatorId = req.userInfo.id
       const data = await bugsService.create(req.body)
+      // @ts-ignore this is a mongoose error...linter is reading the creator wrong
+      data.creator = req.userInfo
       res.send(data)
     } catch (error) {
       next(error)

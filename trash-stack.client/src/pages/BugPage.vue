@@ -1,8 +1,8 @@
 <template>
   <div class="container-fluid">
     <div class="bug">
-      <div class="row my-3">
-        <form class="form-inline" @submit.prevent="editBug">
+      <div class="row my-3" v-if="state.bug.creator">
+        <form class="form-inline" @submit.prevent="editBug" v-if="state.bug.creator.email === state.user.email">
           <div class="form-group">
             <input
               type="text"
@@ -29,19 +29,37 @@
             Edit Bug
           </button>
         </form>
+        <div v-if="state.bug">
+          <div v-if="state.bug.closed" class="card-body">
+            <h3>
+              <p>Status: <span class="text-danger">CLOSED</span></p>
+            </h3>
+          </div>
+          <div v-else class="card-body">
+            <h3>
+              <p>Status: <span class="text-success">OPEN</span></p>
+            </h3>
+          </div>
+        </div>
       </div>
       <div class="row my-5">
-        <div class="col-10 offset-1 border shadow">
+        <div class="col-10 border shadow">
           <div v-if="!state.bug.closed">
             <h1>
               {{ state.bug.title }} |
             </h1>
-            <span> Note...if you close the bug this change will be irreversible, and you will no longer be able to make changes or add notes. <button type="button" class="btn btn-danger" @click.prevent="">              Close Bug
-            </button> </span>
+            <span v-if="state.bug.creator"> Note...if you close the bug this change will be irreversible, and you will no longer be able to make changes or add notes.
+
+              <button type="button" class="btn btn-danger" @click.prevent="closeBug" v-if="state.bug.creator.email === state.user.email">Close Bug</button>
+
+            </span>
           </div>
           <h1 v-else>
             {{ state.bug.title }}
           </h1>
+        </div>
+        <div class="col-2" v-if="state.bug.creator">
+          <img :src="state.bug.creator.picture" alt="">
         </div>
         <div class="col-12">
           <div class="row my-5">
@@ -54,30 +72,14 @@
                     type="text"
                     class="form-control"
                     placeholder="Title"
-                    name="title"
+                    :name="state.newNote.body"
                     id="title"
                     aria-describedby="helpId"
-                    :v-model="state.newNote.body"
+                    v-model="state.newNote.body"
                   />
                 </div>
                 <button type="submit" class="btn btn-primary">
                   Submit your note
-                </button>
-              </form>
-              <form class="form-inline" @submit.prevent="editNote" v-if="state.bug.closed === false">
-                <div class="form-group">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Title"
-                    name="title"
-                    id="title"
-                    aria-describedby="helpId"
-                    :v-model="state.newNote.body"
-                  />
-                </div>
-                <button type="submit" class="btn btn-success my-2">
-                  Edit your note
                 </button>
               </form>
               <Note v-for="note in state.notes" :key="note._id" :note="note" :bug="bug" />
@@ -102,6 +104,7 @@ export default {
   setup() {
     const route = useRoute()
     const state = reactive({
+      user: computed(() => AppState.user),
       bug: computed(() => AppState.bug),
       notes: computed(() => AppState.notes
       // .filter(n => n.bug === state.bug.bug)
@@ -128,6 +131,12 @@ export default {
       },
       getBugDate(id) {
         return bugsService.getBugDate(id)
+      },
+      async closeBug() {
+        const res = window.confirm('Once this bug is closed, there is no going back. You will no longer be able to edit the Bug or add Notes.')
+        if (res) {
+          await bugsService.closeBug(route.params.id)
+        }
       }
     }
   },

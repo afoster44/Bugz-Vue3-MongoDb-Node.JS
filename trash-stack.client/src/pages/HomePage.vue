@@ -62,7 +62,7 @@ export default {
         try {
           const bugId = await bugsService.createBug(state.newBug)
           // I don't know why right now but this router push is not working...moving on
-          router.push({ to: 'BugPage', params: { id: bugId } })
+          router.push({ name: 'BugPage', params: { id: bugId } })
         } catch (error) {
           logger.log(error)
         }

@@ -19,7 +19,7 @@ export class BugsController extends BaseController {
   async getNotesById(req, res, next) {
     try {
       const data = await bugsService.getNotesById(req.params.id)
-      res.send([data])
+      res.send(data)
     } catch (error) {
       next(error)
     }

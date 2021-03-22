@@ -3,7 +3,7 @@ import { BadRequest } from '../utils/Errors'
 
 class BugsService {
   async getNotesById(id) {
-    const notes = await dbContext.Note.find({ bug: id })
+    const notes = await dbContext.Note.find({ bug: id }).populate('creator', 'name picture')
     if (!notes) {
       throw new BadRequest(`I need the proper bug ID even though you are looking for notes...we find notes by bug ID. This is the ID you have provided ${id}`)
     }

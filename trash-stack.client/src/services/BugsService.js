@@ -31,12 +31,14 @@ class BugsService {
     logger.log(editedBug)
     const res = await api.put('api/bugs/' + bugId, editedBug)
     AppState.bug = res.data
+    this.getBugById(bugId)
   }
 
   async closeBug(bugId) {
     logger.log('closing bug now', bugId)
     const res = await api.delete('api/bugs/' + bugId)
     AppState.bug = res.data
+    this.getBugById(bugId)
   }
 
   async createNote(newNote) {

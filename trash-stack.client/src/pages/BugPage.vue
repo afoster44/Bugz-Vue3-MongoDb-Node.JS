@@ -12,7 +12,7 @@
                 name="title"
                 id="title"
                 aria-describedby="helpId"
-                v-model="state.bug.title"
+                v-model="state.newBug.title"
               />
             </div>
             <div class="form-group">
@@ -23,7 +23,7 @@
                 name="description"
                 id="description"
                 aria-describedby="helpId"
-                v-model="state.bug.description"
+                v-model="state.newBug.description"
               />
             </div>
             <button class="btn btn-primary" type="submit">
@@ -147,7 +147,7 @@ export default {
         }
       },
       async editBug() {
-        await bugsService.editBug(route.params.id, state.bug)
+        await bugsService.editBug(route.params.id, state.newBug)
       },
       getBugDate(id) {
         return bugsService.getBugDate(id)

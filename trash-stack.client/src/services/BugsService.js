@@ -31,6 +31,8 @@ class BugsService {
     logger.log(editedBug)
     const res = await api.put('api/bugs/' + bugId, editedBug)
     AppState.bug = res.data
+    // in edit functions in our service if we don't call our getBugById when we edit the bug or close the bug
+    // all the data on the screen disappears.
     this.getBugById(bugId)
   }
 
